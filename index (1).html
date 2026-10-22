@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alışveriş Fişi ve Bakiye Takibi</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col justify-between transition-colors duration-300">
+
+    <!-- Header / Navbar -->
+    <header class="w-full max-w-4xl mx-auto p-4 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-cyan-500 flex items-center justify-center text-white shadow-lg shadow-cyan-500/30">
+                <i class="fa-solid fa-receipt text-lg"></i>
+            </div>
+            <span class="font-bold text-xl tracking-tight bg-gradient-to-r from-cyan-500 to-blue-600 bg-clip-text text-transparent">
+                PayTrack
+            </span>
+        </div>
+        
+        <!-- Dark Mode Switch Button -->
+        <button id="themeToggle" class="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm">
+            <i class="fa-solid fa-moon dark:hidden text-lg"></i>
+            <i class="fa-solid fa-sun hidden dark:block text-amber-400 text-lg"></i>
+        </button>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex items-center justify-center p-4">
+        <div class="w-full max-w-md">
+            
+            <!-- Receipt Card Container -->
+            <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200/60 dark:border-slate-800 overflow-hidden relative">
+                
+                <!-- Card Header -->
+                <div class="bg-gradient-to-br from-cyan-600 to-blue-700 p-6 text-white text-center relative overflow-hidden">
+                    <div class="absolute -right-10 -top-10 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
+                    <div class="absolute -left-10 -bottom-10 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
+                    
+                    <span class="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-semibold tracking-wider uppercase mb-2">
+                        İşlem Özeti
+                    </span>
+                    <h1 class="text-2xl font-bold">Ödeme Başarılı</h1>
+                    <p class="text-cyan-100 text-sm mt-1" id="currentDate">--.--.----</p>
+                </div>
+
+                <!-- Receipt Body Details -->
+                <div class="p-6 space-y-6">
+                    
+                    <!-- Main Values Grid -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- Total Amount -->
+                        <div class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
+                            <div class="flex items-center space-x-2 text-slate-500 dark:text-slate-400 text-xs font-medium mb-1">
+                                <i class="fa-solid fa-cart-shopping text-cyan-500"></i>
+                                <span>Alışveriş Tutarı</span>
+                            </div>
+                            <div class="text-2xl font-black text-slate-900 dark:text-white">
+                                200 <span class="text-sm font-semibold text-slate-500">TL</span>
+                            </div>
+                        </div>
+
+                        <!-- Remaining Balance -->
+                        <div class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
+                            <div class="flex items-center space-x-2 text-slate-500 dark:text-slate-400 text-xs font-medium mb-1">
+                                <i class="fa-solid fa-wallet text-emerald-500"></i>
+                                <span>Kalan Bakiye</span>
+                            </div>
+                            <div class="text-2xl font-black text-emerald-600 dark:text-emerald-400">
+                                400 <span class="text-sm font-semibold text-emerald-600/70 dark:text-emerald-400/70">TL</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Details Divider & List -->
+                    <div class="border-t border-dashed border-slate-200 dark:border-slate-800 pt-4 space-y-3 text-sm">
+                        <div class="flex justify-between items-center text-slate-600 dark:text-slate-400">
+                            <span>İşlem Durumu</span>
+                            <span class="font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+                                Onaylandı
+                            </span>
+                        </div>
+                        <div class="flex justify-between items-center text-slate-600 dark:text-slate-400">
+                            <span>Ödeme Yöntemi</span>
+                            <span class="font-medium text-slate-800 dark:text-slate-200">Dijital Cüzdan</span>
+                        </div>
+                        <div class="flex justify-between items-center text-slate-600 dark:text-slate-400">
+                            <span>İşlem Numarası</span>
+                            <span class="font-mono text-xs text-slate-500">#TR-894205</span>
+                        </div>
+                    </div>
+
+                    <!-- Audio Reader Button (TTS) -->
+                    <div class="pt-2">
+                        <button id="speakBtn" class="w-full bg-cyan-500 hover:bg-cyan-600 active:scale-[0.98] text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg shadow-cyan-500/25 transition-all flex items-center justify-center space-x-2">
+                            <i id="speakerIcon" class="fa-solid fa-volume-high text-lg"></i>
+                            <span id="speakerText">Sesli Dinle</span>
+                        </button>
+                    </div>
+
+                    <!-- Status Notification Toast -->
+                    <div id="statusToast" class="hidden text-center text-xs text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/50 py-2 rounded-lg border border-cyan-200 dark:border-cyan-900 transition-all">
+                        <i class="fa-solid fa-spinner animate-spin mr-1"></i> Sesli yanıt okunuyor...
+                    </div>
+
+                </div>
+
+                <!-- Footer Note -->
+                <div class="bg-slate-50 dark:bg-slate-800/40 px-6 py-3 border-t border-slate-100 dark:border-slate-800 text-center">
+                    <p class="text-xs text-slate-400 dark:text-slate-500">
+                        Bu sayfa GitHub Pages üzerinde yayınlanmaya uygundur.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Page Footer -->
+    <footer class="w-full max-w-4xl mx-auto p-4 text-center text-xs text-slate-400">
+        &copy; 2026 PayTrack - Tüm hakları saklıdır.
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Set Today's Date
+        document.getElementById('currentDate').innerText = new Date().toLocaleDateString('tr-TR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        // Theme Toggle Logic
+        const themeToggleBtn = document.getElementById('themeToggle');
+        const htmlElement = document.documentElement;
+
+        themeToggleBtn.addEventListener('click', () => {
+            htmlElement.classList.toggle('dark');
+        });
+
+        // Text-to-Speech (TTS) Logic
+        const speakBtn = document.getElementById('speakBtn');
+        const speakerIcon = document.getElementById('speakerIcon');
+        const speakerText = document.getElementById('speakerText');
+        const statusToast = document.getElementById('statusToast');
+
+        const messageToSpeak = "Toplam alışveriş tutarı 200 TL, kalan bakiye 400 TL";
+
+        speakBtn.addEventListener('click', () => {
+            if (!('speechSynthesis' in window)) {
+                alert("Tarayıcınız sesli okuma özelliğini desteklemiyor.");
+                return;
+            }
+
+            // Cancel any ongoing speech
+            window.speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(messageToSpeak);
+            utterance.lang = 'tr-TR';
+            utterance.rate = 0.9;
+
+            // Event callbacks
+            utterance.onstart = () => {
+                speakerIcon.className = "fa-solid fa-waveform-lines animate-pulse text-lg";
+                speakerText.innerText = "Okunuyor...";
+                speakBtn.classList.add('opacity-90');
+                statusToast.classList.remove('hidden');
+            };
+
+            utterance.onend = () => {
+                resetSpeakerButton();
+            };
+
+            utterance.onerror = () => {
+                resetSpeakerButton();
+            };
+
+            // Speak
+            window.speechSynthesis.speak(utterance);
+        });
+
+        function resetSpeakerButton() {
+            speakerIcon.className = "fa-solid fa-volume-high text-lg";
+            speakerText.innerText = "Tekrar Dinle";
+            speakBtn.classList.remove('opacity-90');
+            statusToast.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
